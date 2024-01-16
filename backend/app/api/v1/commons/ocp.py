@@ -19,7 +19,7 @@ async def getData(start_datetime: date, end_datetime: date, configpath: str):
     }
     query['query']['bool']['filter']['range']['timestamp']['lte'] = str(end_datetime)
     query['query']['bool']['filter']['range']['timestamp']['gte'] = str(start_datetime)
-
+    return []
     es = ElasticService(configpath=configpath)
     response = await es.post(query)
     await es.close()
