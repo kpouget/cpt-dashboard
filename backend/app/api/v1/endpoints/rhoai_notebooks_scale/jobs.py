@@ -2,7 +2,7 @@ import json
 from fastapi import Response
 from datetime import datetime, timedelta, date
 from fastapi import APIRouter
-from ...commons.ocp import getData
+from ...commons.rhoai_notebooks_scale import getData
 from ...commons.example_responses import ocp_200_response, response_422
 from fastapi.param_functions import Query
 
@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 
-@router.get('/api/v1/ocp/jobs',
+@router.get('/api/v1/rhoai_notebooks_scale/jobs',
             summary="Returns a job list",
             description="Returns a list of jobs in the specified dates. \
             If not dates are provided the API will default the values. \
@@ -25,7 +25,7 @@ async def jobs(start_date: date = Query(None, description="Start date for search
                 pretty: bool = Query(False, description="Output contet in pretty format.")):
     if start_date is None:
         start_date = datetime.utcnow().date()
-        start_date = start_date - timedelta(days=5)
+        start_date = start_date - timedelta(days=50)
 
     if end_date is None:
         end_date = datetime.utcnow().date()
@@ -33,8 +33,9 @@ async def jobs(start_date: date = Query(None, description="Start date for search
     if start_date > end_date:
         return Response(content=json.dumps({'error': "invalid date format, start_date must be less than end_date"}), status_code=422)
 
-    getData(start_date, end_date, 'ocp.elasticsearch')
-    results = await getData(start_date, end_date, 'ocp.elasticsearch')
+    #results = await getData(start_date, end_date, 'rhoai_notebooks_perf.elasticsearch')
+    results = []
+
 
     if len(results) >= 1 :
         response = {
@@ -49,9 +50,15 @@ async def jobs(start_date: date = Query(None, description="Start date for search
             'results': []
         }
 
-    if pretty:
-        json_str = json.dumps(response, indent=4)
-        return Response(content=json_str, media_type='application/json')
+    for result in response["results"]:
+        result["benchmark"] = result["results.benchmark_measures.benchmark"]
+        result["shortVersion"] = result["metadata.rhods_version"]
+        result["platform"] = "OCP "+result["metadata.ocp_version"]
+        result["workers"] = "1"
+        result["ciSystem"] = "Middleware Jenkins"
+        result["networkType"] = "default"
+        result["jobType"] = "On demand"
+        result["jobStatus"] = "PASS"
 
-    jsonstring = json.dumps(response)
-    return jsonstring
+    json_str = json.dumps(response, indent=4 if pretty else None)
+    return Response(content=json_str, media_type='application/json')

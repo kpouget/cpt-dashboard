@@ -23,9 +23,10 @@ export const ToolBar = () => {
     return styles;
   };
 
-  // Selectors for both ocpJobs and quayJobs
+  // Selectors for both ocpJobs / quayJobs / rhoaiNotebooksPerfJobs
   const ocpJobResults = useSelector((state) => state.ocpJobs);
   const quayJobResults = useSelector((state) => state.quayJobs);
+  const rhoaiNotebooksPerfJobResults = useSelector((state) => state.rhoaiNotebooksPerfJobs);
 
   const NavItems = (
     <>
@@ -54,6 +55,15 @@ export const ToolBar = () => {
           onClick={() => setActive("/quay")}
         />
       </ToolbarItem>
+      {/* New RHOAI Notebooks Performance ToolbarItem */}
+      <ToolbarItem>
+        <Link
+          to="/rhoai_notebooks_performance"
+          children={"RHOAI Notebooks Performance"}
+          style={linkStyle("/rhoai_notebooks_performance")}
+          onClick={() => setActive("/rhoai_notebooks_performance")}
+        />
+      </ToolbarItem>
     </>
   );
 
@@ -70,7 +80,7 @@ export const ToolBar = () => {
             <Text4
               style={{ color: "#FFFFFF" }}
               value={`Last Updated Time | ${
-                active === "/ocp" ? ocpJobResults.updatedTime : quayJobResults.updatedTime
+                active === "/ocp" ? ocpJobResults.updatedTime : (active === "/quay" ? quayJobResults.updatedTime : "rhoaiNotebooksPerfJobResults.updatedTime")
               }`}
             />
           </ToolbarItem>

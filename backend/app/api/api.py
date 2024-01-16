@@ -7,6 +7,8 @@ from app.api.v1.endpoints.cpt import cptJobs
 from app.api.v1.endpoints.quay import quayJobs
 from app.api.v1.endpoints.quay import quayGraphs
 
+from app.api.v1.endpoints.rhoai_notebooks_scale import jobs as rhoaiNotebooksScaleJobs
+
 router = APIRouter()
 
 # OCP endopoints
@@ -20,3 +22,6 @@ router.include_router(cptJobs.router, tags=['cpt'])
 # Quay endpoints
 router.include_router(quayJobs.router, tags=['quay'])
 router.include_router(quayGraphs.router, tags=['quay'])
+
+# RHOAI Notebooks Scale endpoints
+router.include_router(rhoaiNotebooksScaleJobs.router, tags=['rhoai_notebooks_scale'])

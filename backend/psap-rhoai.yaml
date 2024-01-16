@@ -1,0 +1,10 @@
+psap-rhoai:
+  elasticsearch:
+    url: 'https://elasticsearch.intlab.perf-infra.lab.eng.rdu2.redhat.com'
+    indice: results-dashboard-data
+ocp-server:
+  port: 8000
+airflow:
+  url: ''
+  username: ''
+  password: ''

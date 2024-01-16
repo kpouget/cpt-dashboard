@@ -3,6 +3,8 @@ from fastapi.encoders import jsonable_encoder
 
 from app import config
 
+import urllib3
+urllib3.disable_warnings()
 
 class ElasticService:
     # todo add bulkhead pattern
@@ -36,7 +38,7 @@ class ElasticService:
         return await self.es.search(
             index=indice,
             body=jsonable_encoder(query),
-            size=size)
+            size=size, request_timeout=60)
 
     async def close(self):
         await self.es.close()

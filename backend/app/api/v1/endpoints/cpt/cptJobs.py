@@ -6,15 +6,19 @@ from fastapi import APIRouter
 from .maps.ocp import ocpMapper
 from .maps.quay import quayMapper
 from .maps.hce import hceMapper
+from .maps.rhoai_notebooks_scale import rhoaiNotebooksScaleMapper
+from .maps.rhoai_notebooks_perf import rhoaiNotebooksPerfMapper
 from ...commons.example_responses import cpt_200_response, response_422
 from fastapi.param_functions import Query
 
 router = APIRouter()
 
 products = {
-            "ocp": ocpMapper,
-            "quay": quayMapper,
-            "hce": hceMapper
+            #"ocp": ocpMapper,
+            #"quay": quayMapper,
+            #"hce": hceMapper,
+            "rhoai_notebooks_scale": rhoaiNotebooksScaleMapper,
+            "rhoai_notebooks_perf": rhoaiNotebooksPerfMapper,
            }
 
 @router.get('/api/v1/cpt/jobs',
@@ -47,8 +51,9 @@ async def jobs(start_date: date = Query(None, description="Start date for search
             results = pd.concat([results, df.loc[:, ["ciSystem", "uuid", "releaseStream", "jobStatus", "buildUrl", "startDate", "endDate", "product", "version", "testName"]]])
         except ConnectionError:
             print("Connection Error in mapper for product " + product)
-        except:
-            print("Date range returned no values or Unknown error in mapper for product " + product)
+        except Exception as e: # DANGEROUS
+            print("Date range returned no values or Unknown error in mapper for product " + product + " | " + str(e))
+            raise e
 
     response = {
         'startDate': start_date.__str__(),
