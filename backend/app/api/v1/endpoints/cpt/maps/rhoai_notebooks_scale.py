@@ -13,6 +13,9 @@ async def rhoaiNotebooksScaleMapper(start_datetime: date, end_datetime: date, co
     df.insert(len(df.columns), "buildUrl", "N/A")
     df.insert(len(df.columns), "jobStatus", "success")
 
+    if df.empty:
+        return df
+
     df["startDate"] = df["metadata.start"]
     df["endDate"] = df["metadata.end"]
     df["uuid"] = df["metadata.start"]
