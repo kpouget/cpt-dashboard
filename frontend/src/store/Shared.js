@@ -2,6 +2,9 @@
 
 export const getUrl = () => {
     const {hostname, protocol} = window.location
+    if (hostname === "cpt-dashboard-topsail-cpt-dashboard.apps.bm.example.com") {
+        return "https://cpt-dashboard-backend-topsail-cpt-dashboard.apps.bm.example.com"
+    }
     return (hostname === "localhost") ? "http://localhost:8000":`${protocol}//${hostname}`
 }
 
